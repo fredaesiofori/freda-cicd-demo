@@ -1,6 +1,6 @@
 {
   "title": "FREDA CI/CD Demo",
   "heading": "Hello from my Node.js CI/CD Pipeline!",
-  "version": "1.0",
-  "message": "This site is built and deployed automatically by GitHub Actions."
+  "version": "2.0",
+  "message": "This site was automatically updated by GitHub Actions on my second deployment."
 }
