@@ -1,0 +1,10 @@
+{
+  "name": "freda-cicd-demo",
+  "version": "1.0.0",
+  "description": "Node.js static site generator with CI/CD via GitHub Actions",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "author": "FREDA",
+  "license": "MIT"
+}
