@@ -1,17 +1,392 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>{{title}}</title>
-  <style>
-    body { font-family: sans-serif; text-align: center; margin-top: 80px; background: #f4f4f4; }
-    h1 { color: #2c3e50; }
-    .version { color: #888; font-size: 0.9em; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{title}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,400..600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1C1512;
+    --surface: #251C17;
+    --surface-raised: #2E2319;
+    --text: #F2E9DD;
+    --muted: #A79184;
+    --gold: #C9973E;
+    --rust: #8B3A2A;
+    --line: rgba(242,233,221,0.12);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+  }
+  h1, h2, h3 { font-family: 'Fraunces', serif; font-weight: 500; margin: 0; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  a { color: inherit; }
+
+  /* Nav */
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(28,21,18,0.9);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .wrap { display: flex; justify-content: space-between; align-items: center; height: 68px; }
+  .brand { font-family: 'Fraunces', serif; font-size: 1.3rem; letter-spacing: 0.02em; }
+  .brand span { color: var(--gold); }
+  nav ul { list-style: none; display: flex; gap: 28px; margin: 0; padding: 0; }
+  nav ul a { text-decoration: none; font-size: 0.92rem; color: var(--muted); transition: color 0.2s; }
+  nav ul a:hover, nav ul a:focus-visible { color: var(--text); }
+
+  /* Hero */
+  .hero { padding: 96px 0 64px; }
+  .hero .wrap { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: center; }
+  .eyebrow {
+    display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-bottom: 18px;
+  }
+  .hero h1 { font-size: clamp(2.4rem, 5vw, 3.6rem); line-height: 1.08; letter-spacing: -0.01em; }
+  .hero p.lede { color: var(--muted); font-size: 1.1rem; margin: 22px 0 32px; max-width: 46ch; }
+  .btn-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 13px 26px; border-radius: 2px; font-size: 0.95rem;
+    text-decoration: none; font-weight: 500; transition: transform 0.15s, background 0.2s;
+  }
+  .btn-primary { background: var(--gold); color: #1C1512; }
+  .btn-primary:hover { background: #dba94f; transform: translateY(-1px); }
+  .btn-ghost { border: 1px solid var(--line); color: var(--text); }
+  .btn-ghost:hover { border-color: var(--gold); }
+
+  /* Roast curve signature element */
+  .curve-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 28px;
+  }
+  .curve-card .cap { display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--muted); margin-bottom: 14px; letter-spacing: 0.04em; }
+  #roastPath { stroke-dasharray: 620; stroke-dashoffset: 620; animation: draw 2.4s ease forwards 0.3s; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  .curve-labels { display: flex; justify-content: space-between; margin-top: 10px; font-size: 0.68rem; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+
+  /* Section shell */
+  section { padding: 88px 0; border-top: 1px solid var(--line); }
+  .section-head { max-width: 62ch; margin-bottom: 48px; }
+  .section-head .eyebrow { margin-bottom: 10px; }
+  .section-head h2 { font-size: clamp(1.8rem, 3.4vw, 2.4rem); }
+  .section-head p { color: var(--muted); margin-top: 12px; }
+
+  /* Process (numbered — real sequence) */
+  .process-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .process-step { background: var(--bg); padding: 32px 24px; }
+  .process-step .num { font-family: 'IBM Plex Mono', monospace; color: var(--gold); font-size: 0.85rem; }
+  .process-step h3 { font-size: 1.15rem; margin: 14px 0 10px; }
+  .process-step p { color: var(--muted); font-size: 0.92rem; margin: 0; }
+
+  /* Pricing */
+  .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .price-card { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 32px 28px; display: flex; flex-direction: column; }
+  .price-card.featured { border-color: var(--gold); background: var(--surface-raised); }
+  .price-card h3 { font-size: 1.2rem; }
+  .price-card .amount { font-family: 'IBM Plex Mono', monospace; font-size: 2.1rem; color: var(--gold); margin: 16px 0 4px; }
+  .price-card .amount .unit { font-size: 0.9rem; color: var(--muted); }
+  .price-card ul { list-style: none; padding: 0; margin: 20px 0 28px; color: var(--muted); font-size: 0.92rem; flex-grow: 1; }
+  .price-card li { padding: 7px 0; border-top: 1px solid var(--line); }
+  .price-card li:first-child { border-top: none; }
+
+  /* Testimonials */
+  .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .testi-card { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 28px; }
+  .testi-card p.quote { font-family: 'Fraunces', serif; font-style: italic; font-size: 1.08rem; line-height: 1.5; }
+  .testi-card .attr { margin-top: 18px; font-size: 0.85rem; color: var(--muted); }
+  .attr strong { color: var(--text); display: block; }
+
+  /* Team */
+  .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .team-card .photo {
+    width: 100%; aspect-ratio: 1; border-radius: 4px; background: linear-gradient(135deg, var(--surface-raised), var(--rust));
+    margin-bottom: 16px;
+  }
+  .team-card h3 { font-size: 1.05rem; }
+  .team-card .role { color: var(--gold); font-size: 0.82rem; font-family: 'IBM Plex Mono', monospace; margin: 4px 0 10px; }
+  .team-card p { color: var(--muted); font-size: 0.9rem; margin: 0; }
+
+  /* Contact */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+  form { display: flex; flex-direction: column; gap: 16px; }
+  label { font-size: 0.82rem; color: var(--muted); display: block; margin-bottom: 6px; }
+  input, textarea, select {
+    width: 100%; background: var(--surface); border: 1px solid var(--line); color: var(--text);
+    padding: 12px 14px; border-radius: 2px; font-family: inherit; font-size: 0.95rem;
+  }
+  input:focus, textarea:focus, select:focus { outline: 2px solid var(--gold); outline-offset: 1px; border-color: var(--gold); }
+  textarea { resize: vertical; min-height: 100px; }
+  .contact-info { color: var(--muted); }
+  .contact-info h3 { color: var(--text); font-size: 1.3rem; margin-bottom: 14px; }
+  .contact-info .row { padding: 14px 0; border-top: 1px solid var(--line); }
+  .contact-info .row:first-of-type { border-top: none; }
+  .contact-info .label { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gold); }
+
+  footer { border-top: 1px solid var(--line); padding: 40px 0; }
+  footer .wrap { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 0.85rem; }
+
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    #roastPath { animation: none; stroke-dashoffset: 0; }
+    .reveal { transition: none; opacity: 1; transform: none; }
+  }
+
+  @media (max-width: 860px) {
+    .hero .wrap { grid-template-columns: 1fr; }
+    .process-grid, .price-grid, .testi-grid, .team-grid { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; }
+    nav ul { display: none; }
+  }
+</style>
 </head>
 <body>
-  <h1>{{heading}}</h1>
-  <p>{{message}}</p>
-  <p class="version">Version {{version}}</p>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">Ember <span>&</span> Oak</div>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#team">Team</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">{{eyebrow}}</span>
+      <h1>{{heading}}</h1>
+      <p class="lede">{{message}}</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="#pricing">See pricing</a>
+        <a class="btn btn-ghost" href="#contact">Wholesale inquiry</a>
+      </div>
+    </div>
+    <div class="curve-card">
+      <div class="cap"><span>ROAST PROFILE</span><span>12:40 / BATCH #{{version}}</span></div>
+      <svg viewBox="0 0 320 160" width="100%" role="img" aria-label="Roast temperature curve from charge to drop">
+        <line x1="0" y1="140" x2="320" y2="140" stroke="rgba(242,233,221,0.15)" stroke-width="1"/>
+        <path id="roastPath" d="M0,138 C40,132 60,110 90,92 C120,74 130,58 160,48 C190,40 210,34 240,26 C265,20 290,16 320,12"
+              fill="none" stroke="#C9973E" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="90" cy="92" r="3" fill="#F2E9DD"/>
+        <circle cx="160" cy="48" r="3" fill="#8B3A2A"/>
+        <circle cx="240" cy="26" r="3" fill="#F2E9DD"/>
+      </svg>
+      <div class="curve-labels">
+        <span>Charge</span><span>Yellowing</span><span>First Crack</span><span>Drop</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">About</span>
+      <h2>Small batches, on purpose.</h2>
+      <p>We roast twelve kilos at a time, three days a week, in a converted garage that still smells like the first bag we ever burned. No blends bigger than we can taste-test by hand. Every batch gets a roast log, a cupping note, and a number — so when a café reorders, we can put the exact same cup back in their hands.</p>
+    </div>
+  </div>
+</section>
+
+<section id="process">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Process</span>
+      <h2>Bean to bag, in four stages.</h2>
+    </div>
+    <div class="process-grid reveal">
+      <div class="process-step">
+        <span class="num">01</span>
+        <h3>Source</h3>
+        <p>Green beans bought direct from three family farms we visit every season — no brokers, no blind lots.</p>
+      </div>
+      <div class="process-step">
+        <span class="num">02</span>
+        <h3>Roast</h3>
+        <p>12kg drum batches, roasted to a logged profile so every bag of a given lot tastes the same.</p>
+      </div>
+      <div class="process-step">
+        <span class="num">03</span>
+        <h3>Rest</h3>
+        <p>24–48 hours of degassing before a single bag gets sealed — rushed coffee tastes rushed.</p>
+      </div>
+      <div class="process-step">
+        <span class="num">04</span>
+        <h3>Pack</h3>
+        <p>Nitrogen-flushed, one-way valve bags, roast date stamped on every one.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Pricing</span>
+      <h2>For your kitchen or your counter.</h2>
+      <p>Simple pricing, no loyalty gimmicks. Wholesale accounts get a dedicated roast schedule.</p>
+    </div>
+    <div class="price-grid reveal">
+      <div class="price-card">
+        <h3>Single Bag</h3>
+        <div class="amount">$16<span class="unit"> / 340g</span></div>
+        <ul>
+          <li>Any single origin in rotation</li>
+          <li>Whole bean or ground to order</li>
+          <li>Ships within 3 days of roast</li>
+        </ul>
+        <a class="btn btn-ghost" href="#contact">Order a bag</a>
+      </div>
+      <div class="price-card featured">
+        <h3>Subscription</h3>
+        <div class="amount">$14<span class="unit"> / bag, biweekly</span></div>
+        <ul>
+          <li>Rotating origin, roaster's pick</li>
+          <li>Pause or swap anytime</li>
+          <li>First month includes tasting notes card</li>
+        </ul>
+        <a class="btn btn-primary" href="#contact">Start subscription</a>
+      </div>
+      <div class="price-card">
+        <h3>Wholesale</h3>
+        <div class="amount mono">Custom</div>
+        <ul>
+          <li>5kg/week minimum</li>
+          <li>Dedicated roast day</li>
+          <li>Staff cupping session included</li>
+        </ul>
+        <a class="btn btn-ghost" href="#contact">Talk to us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="testimonials">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Word of mouth</span>
+      <h2>What our accounts say.</h2>
+    </div>
+    <div class="testi-grid reveal">
+      <div class="testi-card">
+        <p class="quote">"Every bag tastes like the last one. That consistency is the whole reason we switched."</p>
+        <div class="attr"><strong>Nadia Owusu</strong>Owner, Corner House Café</div>
+      </div>
+      <div class="testi-card">
+        <p class="quote">"They send a roast log with the invoice. No other roaster we've used does that."</p>
+        <div class="attr"><strong>Kwame Baffour</strong>Head Barista, Sunroom Coffee</div>
+      </div>
+      <div class="testi-card">
+        <p class="quote">"Small enough to call and actually talk to the roaster. That matters more than people think."</p>
+        <div class="attr"><strong>Ama Serwaa</strong>Manager, The Daily Grind</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="team">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Team</span>
+      <h2>Three people, one roaster.</h2>
+    </div>
+    <div class="team-grid reveal">
+      <div class="team-card">
+        <div class="photo"></div>
+        <h3>Kojo Mensah</h3>
+        <div class="role">Head Roaster</div>
+        <p>Logs every batch by hand. Has strong, unshakeable opinions about first crack timing.</p>
+      </div>
+      <div class="team-card">
+        <div class="photo"></div>
+        <h3>Efua Asante</h3>
+        <div class="role">Green Buyer</div>
+        <p>Visits the farms every harvest. Speaks more Twi and Amharic than English most weeks.</p>
+      </div>
+      <div class="team-card">
+        <div class="photo"></div>
+        <h3>Yaw Boateng</h3>
+        <div class="role">Operations</div>
+        <p>Keeps the wholesale schedule honest and the roast log spreadsheet from becoming chaos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div class="reveal">
+        <span class="eyebrow">Contact</span>
+        <h2 style="margin-bottom: 20px;">Wholesale &amp; general inquiries.</h2>
+        <form onsubmit="event.preventDefault(); alert('Thanks — we\'ll reply within one business day.'); this.reset();">
+          <div>
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" required>
+          </div>
+          <div>
+            <label for="business">Business name (optional)</label>
+            <input id="business" name="business" type="text">
+          </div>
+          <div>
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" required>
+          </div>
+          <div>
+            <label for="volume">Expected weekly volume</label>
+            <select id="volume" name="volume">
+              <option>Just for me</option>
+              <option>1–5kg (small café)</option>
+              <option>5–20kg (café / restaurant)</option>
+              <option>20kg+ (multi-location)</option>
+            </select>
+          </div>
+          <div>
+            <label for="message">Message</label>
+            <textarea id="message" name="message" required></textarea>
+          </div>
+          <button class="btn btn-primary" type="submit" style="border:none; cursor:pointer; align-self:flex-start;">Send inquiry</button>
+        </form>
+      </div>
+      <div class="contact-info reveal">
+        <h3>Ember &amp; Oak Roasters</h3>
+        <div class="row"><div class="label">Roastery</div>12 Foundry Lane, Osu, Accra</div>
+        <div class="row"><div class="label">Hours</div>Tue–Sat, 8am–4pm</div>
+        <div class="row"><div class="label">Email</div>orders@emberandoak.example</div>
+        <div class="row"><div class="label">Wholesale lead time</div>3–5 business days</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>&copy; 2026 Ember &amp; Oak Roasters</span>
+    <span class="mono">Version {{version}}</span>
+  </div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
 </body>
 </html>

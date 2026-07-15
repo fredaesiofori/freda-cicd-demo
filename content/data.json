@@ -1,6 +1,7 @@
 {
-  "title": "FREDA CI/CD Demo",
-  "heading": "Hello from my Node.js CI/CD Pipeline!",
+  "title": "Ember & Oak Roasters — Small-Batch Coffee",
+  "eyebrow": "Small-batch roastery",
+  "heading": "Roasted in small batches, three days a week.",
   "version": "2.0",
-  "message": "This site was automatically updated by GitHub Actions on my second deployment."
+  "message": "We roast twelve kilos at a time and log every batch, so the bag you reorder tastes exactly like the one before it."
 }
