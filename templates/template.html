@@ -31,8 +31,25 @@
   nav ul { list-style: none; display: flex; gap: 28px; margin: 0; padding: 0; }
   nav ul a { text-decoration: none; font-size: 0.92rem; color: var(--muted); transition: color 0.2s; }
   nav ul a:hover, nav ul a:focus-visible { color: var(--text); }
-  .hero { padding: 96px 0 64px; }
-  .hero .wrap { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: center; }
+  .hero {
+    position: relative;
+    padding: 130px 0 90px;
+    background:
+      linear-gradient(180deg, rgba(20,14,11,0.35) 0%, rgba(20,14,11,0.75) 55%, var(--bg) 100%),
+      url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1800&q=70') center 35% / cover no-repeat;
+  }
+  .hero::after {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 70% 20%, rgba(201,151,62,0.14), transparent 60%);
+    pointer-events: none;
+  }
+  .hero .wrap { position: relative; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: center; }
+  .flag-tag {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem;
+    color: var(--muted); font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.04em;
+    margin-bottom: 14px;
+  }
+  .flag-tag .flag { font-size: 0.95rem; line-height: 1; }
   .eyebrow { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-bottom: 18px; }
   .hero h1 { font-size: clamp(2.4rem, 5vw, 3.7rem); line-height: 1.05; letter-spacing: -0.01em; }
   .hero p.lede { color: var(--muted); font-size: 1.1rem; margin: 22px 0 32px; max-width: 46ch; }
@@ -124,6 +141,7 @@
 <header class="hero">
   <div class="wrap">
     <div>
+      <span class="flag-tag"><span class="flag">🇬🇭</span> Roasted in Accra, Ghana</span><br>
       <span class="eyebrow">{{eyebrow}}</span>
       <h1>{{heading}}</h1>
       <p class="lede">{{message}}</p>
@@ -182,20 +200,20 @@
     <div class="price-grid reveal">
       <div class="price-card">
         <h3>Single Bag</h3>
-        <div class="amount">$16<span class="unit"> / 340g</span></div>
+        <div class="amount">₵180<span class="unit"> / 340g</span></div>
         <ul><li>Any single origin in rotation</li><li>Whole bean or ground to order</li><li>Ships within 3 days of roast</li></ul>
         <a class="btn btn-ghost" href="#contact">Order a bag</a>
       </div>
       <div class="price-card featured">
         <h3>Subscription</h3>
-        <div class="amount">$14<span class="unit"> / bag, biweekly</span></div>
+        <div class="amount">₵160<span class="unit"> / bag, biweekly</span></div>
         <ul><li>Rotating origin, roaster's pick</li><li>Pause or swap anytime</li><li>First month includes tasting notes card</li></ul>
         <a class="btn btn-primary" href="#contact">Start subscription</a>
       </div>
       <div class="price-card">
         <h3>Wholesale</h3>
         <div class="amount mono">Custom</div>
-        <ul><li>5kg/week minimum</li><li>Dedicated roast day</li><li>Staff cupping session included</li></ul>
+        <ul><li>35kg/week minimum</li><li>Dedicated roast day</li><li>Staff cupping session included</li></ul>
         <a class="btn btn-ghost" href="#contact">Talk to us</a>
       </div>
     </div>
@@ -257,7 +275,7 @@
       </div>
       <div class="contact-info reveal">
         <h3>Ember &amp; Oak Roasters</h3>
-        <div class="row"><div class="label">Roastery</div>12 Foundry Lane, Osu, Accra</div>
+        <div class="row"><div class="label">Roastery</div>12 Foundry Lane, Osu, Accra, Ghana</div>
         <div class="row"><div class="label">Hours</div>Tue–Sat, 8am–4pm</div>
         <div class="row"><div class="label">Email</div>orders@emberandoak.example</div>
         <div class="row"><div class="label">Wholesale lead time</div>3–5 business days</div>
@@ -268,7 +286,7 @@
 
 <footer>
   <div class="wrap">
-    <span>&copy; 2026 Ember &amp; Oak Roasters</span>
+    <span>&copy; 2026 Ember &amp; Oak Roasters · 🇬🇭 Accra</span>
     <span class="mono">Version {{version}}</span>
   </div>
 </footer>
